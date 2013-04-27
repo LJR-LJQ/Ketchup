@@ -15,5 +15,21 @@ exports.parse = parse;
 */
 function parse(inputStr) {
 	// TODO
-	return false;
+	// 模拟数据：
+	var rootNode = {
+		name: 'html',
+		children: []
+	};
+
+	rootNode.children.push({
+		name: 'head',
+		children: []
+	});
+
+	rootNode.children.push({
+		name: 'body',
+		children: []
+	});
+
+	return rootNode;
 }
