@@ -1,6 +1,9 @@
 // [导出]
 exports.output = output;
 
+// [模块]
+var format = require('util').format;
+
 /*
 	名称：输出函数
 	参数：
@@ -13,5 +16,20 @@ exports.output = output;
 	本函数能够根据番茄酱(Ketchup)语言的AST语法树生成对应的 html5 字符串
 */
 function output(tree) {
-	return '<html><head></head><body></body></html>';
+	var text = tag(tree);
+				console.log(text);
+	return text;
+
+	function tag(node) {
+		var content;
+
+		content = '';
+		if (node.children) {
+			for (var i = 0, len = node.children.length; i < len; ++i) {
+				content += tag(node.children[i]);
+			}
+		}
+
+		return format('<%s>%s</%s>', node.name, content, node.name);
+	}
 }
