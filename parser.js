@@ -25,7 +25,7 @@ function parse(inputStr) {
 		nodeList;
 
 	// [流程]
-	rootNode = node('root', -1);debugger;
+	rootNode = node('root', -1);
 
 	if (typeof inputStr !== 'string' || inputStr.length < 1) {
 		// inputStr 不是字符串（例如 null、undefined、其他类型），或者是空字符串
@@ -45,7 +45,7 @@ function parse(inputStr) {
 
 	// [函数]
 	function node(name, level) {
-		return {name: name, level: undefined, children: []};
+		return {name: name, level: level, children: []};
 	}
 
 	function toLines(inputStr) {
@@ -84,15 +84,17 @@ function parse(inputStr) {
 		while (nodeList.length > 0) {
 			e = nodeList.pop();
 			parent = findParent(e, nodeList);
-			parent.children.unshift(e);
+			if (parent) {
+				parent.children.unshift(e);
+			}
 		}
 
 		return e;
 
 		// [函数]
-		function findParent(e, nodeList) {
+		function findParent(e, nodeList) {debugger;
 			for (var i = nodeList.length - 1; i > -1; --i) {
-				if (nodeList[i].level > e.level) {
+				if (nodeList[i].level < e.level) {
 					return nodeList[i];
 				}
 			}
