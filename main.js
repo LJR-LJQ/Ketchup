@@ -19,7 +19,7 @@ if (!fs.existsSync(inputFileName)) {
 	return;
 }
 
-inputFileContent = fs.readFileSync(inputFileName);
+inputFileContent = fs.readFileSync(inputFileName, {encoding: 'utf8'});
 outputFileContent = outputer.output(parser.parse(inputFileContent));
 
 if (outputFileContent === false) {
