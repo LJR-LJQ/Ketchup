@@ -36,7 +36,6 @@ function parse(inputBuf) {
 	*/
 
 	// 变量
-	var inputStr;
 	var rootNode = {
 		name: 'root',
 		children: []
@@ -90,7 +89,7 @@ function parse(inputBuf) {
 		}
 		outputStr = inputStr.slice(i + 1, length);
 		if(callback != null) callback(outputStr);
-		return inputStr.slice(0, i + 1).replace(/[\r\n]/g,'');
+		return inputStr.slice(0, i + 1).replace(/[\r\n]/g, '');
 	}
 
 	function getSpaceCount(inputStr, callback) {
@@ -111,7 +110,7 @@ function parse(inputBuf) {
 		// 变量
 		var node = {
 			name: '',
-			attribute: [],
+			attribute: {},
 			text: '',
 			children: []
 		};
