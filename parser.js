@@ -28,7 +28,7 @@ function parse(inputBuf) {
 	}
 	traverse(rootNode, inputObj, -1);
 	console.log(rootNode.children[0].children);
-	return rootNode;
+	return rootNode.children[0];
 
 	// [函数]
 	function traverse(root, inputObj, fartherSpaceCount) {
