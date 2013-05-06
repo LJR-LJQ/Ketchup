@@ -14,48 +14,31 @@ exports.parse = parse;
 	本函数能够解析符合番茄酱(Ketchup)语言的字符串并构造出语义等价的AST语法树返回
 */
 function parse(inputBuf) {
-	// TODO
-	// 模拟数据：
-	/*
-	var rootNode = {
-		name: 'html',
-		children: []
-	};
+	// [变量]
+	var rootNode,
+		inputObj;
 
-	rootNode.children.push({
-		name: 'head',
-		children: []
-	});
-
-	rootNode.children.push({
-		name: 'body',
-		children: []
-	});
-
-	return rootNode;
-	*/
-
-	// 变量
-	var rootNode = {
+	// [流程]
+	rootNode = {
 		name: 'root',
 		children: []
 	};
-	var inputObj = {
+	inputObj = {
 		str: inputBuf.toString('utf8', 0, inputBuf.length)
 	}
-	// 流程
 	traverse(rootNode, inputObj, -1);
 	console.log(rootNode.children[0].children);
 	return rootNode;
 
-	// 函数
+	// [函数]
 	function traverse(root, inputObj, fartherSpaceCount) {
-		// 变量
-		var firstLineStr;
-		var remainStr;
-		var spaceCount;
-		var node;
-		// 流程
+		// [变量]
+		var firstLineStr,
+			remainStr,
+			spaceCount,
+			node;
+
+		// [流程]
 		while(true) {
 			if(inputObj.str.length <= 0) break; // 结束
 
@@ -80,10 +63,12 @@ function parse(inputBuf) {
 	}
 
 	function getFirstLine(inputStr, callback) {
-		// 变量
-		var outputStr;
-		var length = inputStr.length;
-		// 流程
+		// [变量]
+		var outputStr,
+			length;
+
+		// [流程]
+		length = inputStr.length;
 		for(var i = 0; i < length; i++) {
 			if(inputStr.charAt(i) == '\n') break;
 		}
@@ -93,10 +78,12 @@ function parse(inputBuf) {
 	}
 
 	function getSpaceCount(inputStr, callback) {
-		// 变量
-		var outputStr;
-		var length = inputStr.length;
-		// 流程
+		// [变量]
+		var outputStr,
+			length;
+
+		// [流程]
+		length = inputStr.length;
 		for(var i = 0; i < length; i++) {
 			if(inputStr.charAt(i) != ' ') {
 				outputStr = inputStr.slice(i, length);
@@ -107,16 +94,17 @@ function parse(inputBuf) {
 	}
 
 	function parseLineToNode(inputStr) {
-		// 变量
-		var node = {
+		// [变量]
+		var node,
+			length;
+
+		// [流程]
+		node = {
 			name: '',
 			attribute: {},
 			text: '',
 			children: []
 		};
-		var length;
-
-		// 流程
 
 		// 提取标签名字
 		length = inputStr.length;
@@ -131,9 +119,11 @@ function parse(inputBuf) {
 		return node;
 	}
 
+	// [函数]
 	function isAlpha(cCheck) {
 		return ((('a'<=cCheck) && (cCheck<='z')) || (('A'<=cCheck) && (cCheck<='Z')));
 	}
+
 	function isUnderline(cCheck) {
 		return ('_' == cCheck);
 	}
