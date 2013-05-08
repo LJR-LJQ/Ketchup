@@ -27,7 +27,7 @@ function parse(inputBuf) {
 		str: inputBuf.toString('utf8', 0, inputBuf.length)
 	}
 	traverse(rootNode, inputObj, -1);
-	console.log(rootNode.children[0].children);
+	console.log(rootNode.children[0].children[0]);
 	return rootNode.children[0];
 
 	// [函数]
@@ -46,9 +46,7 @@ function parse(inputBuf) {
 				remainStr = outputStr;
 			});
 
-			spaceCount = getSpaceCount(firstLineStr, function(outputStr){
-				firstLineStr = outputStr;
-			});
+			spaceCount = getSpaceCount(firstLineStr);
 
 			if(spaceCount > fartherSpaceCount) { // 缩进
 				node = parseLineToNode(firstLineStr);
@@ -58,73 +56,145 @@ function parse(inputBuf) {
 			} else {
 				break;
 			}
-
 		}
 	}
 
 	function getFirstLine(inputStr, callback) {
 		// [变量]
 		var outputStr,
-			length;
+			i;
 
 		// [流程]
-		length = inputStr.length;
-		for(var i = 0; i < length; i++) {
+		for(i = 0; i < inputStr.length; i++) {
 			if(inputStr.charAt(i) == '\n') break;
 		}
-		outputStr = inputStr.slice(i + 1, length);
+		outputStr = inputStr.substring(i + 1);
 		if(callback != null) callback(outputStr);
-		return inputStr.slice(0, i + 1).replace(/[\r\n]/g, '');
+		return inputStr.substring(0, i + 1).replace(/[\r\n]/g, '');
 	}
 
-	function getSpaceCount(inputStr, callback) {
+	function getSpaceCount(inputStr) {
 		// [变量]
 		var outputStr,
-			length;
+			count,
+			cCheck;
 
 		// [流程]
-		length = inputStr.length;
-		for(var i = 0; i < length; i++) {
-			if(inputStr.charAt(i) != ' ') {
-				outputStr = inputStr.slice(i, length);
-				if(callback != null) callback(outputStr);
-				return i;
+		for(var i = 0, count = 0; i < inputStr.length; i++) {
+			cCheck = inputStr.charAt(i);
+			if(cCheck == ' ') {
+				count++;
+			} else if(cCheck == '\t') { // 一个tab相当于四个空格
+				count += 4;
+			} else {
+				break;
 			}
 		}
+		return count;
 	}
 
-	function parseLineToNode(inputStr) {
+	function parseLineToNode(inputStr) { // 将一行构造成node
 		// [变量]
-		var node,
-			length;
+		var rootNode,
+			currentNode,
+			preNode,
+			lines;
 
 		// [流程]
-		node = {
-			name: '',
-			attribute: {},
-			text: '',
-			children: []
-		};
+		lines = splitToLines(inputStr);
+		for(var i = 0; i < lines.length; i++) { // 处理行内关系的for循环
+			currentNode = parseSentenceToNode(lines[i]);
 
-		// 提取标签名字
-		length = inputStr.length;
-		for(var i = 0; i < inputStr.length; i++) {
-			var c = inputStr.charAt(i);
-			if(!(isAlpha(c) || isUnderline(c))) break;
+			if(i == 0) { // 将第一个标签存储好，用作返回
+				rootNode = currentNode;
+			} else { // 行内关系的嵌套
+				preNode.children.push(currentNode);
+			}
+			preNode = currentNode;
 		}
-		node.name = inputStr.slice(0, i);
-		// 下面分析标签属性，比较复杂，暂时写到这
-		inputStr = inputStr.slice(i, length);
-		length = inputStr.length;
-		return node;
+		return rootNode;
 	}
 
-	// [函数]
-	function isAlpha(cCheck) {
-		return ((('a'<=cCheck) && (cCheck<='z')) || (('A'<=cCheck) && (cCheck<='Z')));
+	function splitToLines(inputStr) { // 将一行分成多行
+		// [变量]
+		var indexOfVertical,
+			splitRight,
+			splitResult;
+		// [流程]
+		splitResult = inputStr;
+		indexOfVertical = inputStr.indexOf('| ');
+		if(indexOfVertical >= 0) {
+			splitRight = inputStr.substring(indexOfVertical);
+			splitResult = inputStr.substring(0, indexOfVertical);
+		}
+		splitResult = splitResult.split('>');
+		if(typeof splitRight != 'undefined') {
+			splitResult.push(splitRight);
+		}
+		for(var i = 0; i < splitResult.length; i++) {
+			splitResult[i] = splitResult[i].trim();
+			if(splitResult[i] == '') splitResult.splice(i, 1);
+		}
+		return splitResult;
 	}
 
-	function isUnderline(cCheck) {
-		return ('_' == cCheck);
+	function parseSentenceToNode(inputStr) { // 将一个标签构造成node
+		// [变量]
+		var indexOfVertical,
+			splitResult;
+
+		var name,
+			text,
+			attributes,
+		// [流程]
+		name = '';
+		text = '';
+		attributes = [];
+		splitResult = [];
+		indexOfVertical = inputStr.indexOf('| ');
+		if(indexOfVertical == 0) { // 如果该标签为文本
+			name = '|'
+			text = inputStr.substring(2);
+		} else {
+			splitResult = splitToWords(inputStr);
+			name = splitResult[0]
+			for(var i = 1; i < splitResult.length; i++) { // 处理每个标签的for循环
+				attributes.push(splitResult[i]);
+			}
+		}
+		return node(name, attributes, text, []);
+	}
+
+	function node(name, attributes, text, children) {
+		return {
+			name: name,
+			attributes: attributes,
+			text: text,
+			children: children
+		};
+	}
+
+	function splitToWords(inputStr) { // 忽略引号内的空格，对字符串按空格进行分割
+		// [变量]
+		var splitResult,
+			isInQuotation,
+			cCheck,
+			preIndex;
+		// [流程]
+		splitResult = [];
+		isInQuotation = false;
+		inputStr += ' ';
+		preIndex = 0;
+		for(var i = 0; i < inputStr.length; i++) {
+			cCheck = inputStr.charAt(i);
+			if((cCheck == ' ') && !isInQuotation) {
+				splitResult.push(inputStr.substring(preIndex, i));
+				preIndex = i + 1;
+			} else if(cCheck == '\'' || cCheck == '"') {
+				isInQuotation = !isInQuotation;
+
+			}
+		}
+		return splitResult;
 	}
 }
