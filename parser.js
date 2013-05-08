@@ -27,7 +27,6 @@ function parse(inputBuf) {
 		str: inputBuf.toString('utf8', 0, inputBuf.length)
 	}
 	traverse(rootNode, inputObj, -1);
-	console.log(rootNode.children[0].children[0]);
 	return rootNode.children[0];
 
 	// [函数]
@@ -122,18 +121,18 @@ function parse(inputBuf) {
 			splitResult;
 		// [流程]
 		splitResult = inputStr;
-		indexOfVertical = inputStr.indexOf('| ');
+		indexOfVertical = inputStr.indexOf(' | '); // 先将行内的TEXT提取出来
 		if(indexOfVertical >= 0) {
-			splitRight = inputStr.substring(indexOfVertical);
+			splitRight = inputStr.substring(indexOfVertical + 1);
 			splitResult = inputStr.substring(0, indexOfVertical);
 		}
-		splitResult = splitResult.split('>');
-		if(typeof splitRight != 'undefined') {
-			splitResult.push(splitRight);
-		}
-		for(var i = 0; i < splitResult.length; i++) {
+		splitResult = splitResult.split(' > '); // 对非TEXT部分按‘>’进行分割
+		for(var i = 0; i < splitResult.length; i++) { // 处理分割结果，将空白删除
 			splitResult[i] = splitResult[i].trim();
 			if(splitResult[i] == '') splitResult.splice(i, 1);
+		}
+		if(typeof splitRight != 'undefined') { // 最后将TEXT插回到结果集中
+			splitResult.push(splitRight);
 		}
 		return splitResult;
 	}
