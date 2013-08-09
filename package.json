@@ -1,0 +1,21 @@
+{
+	"name": "ketchup-language",
+	"description": "Write HTML5 in an easier way.",
+	"homepage": "http://dev.miaodeli.com/ketchup",
+	"keyword": ["html5", "language", "ketchup"],
+	"author": {
+		"name": "Jianru Lin",
+		"email": "jianru.lin@gmail.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:LJR-LJQ/Ketchup.git"
+	},
+	"main": "ketchup.js",
+	"version": "1.0.0",
+	"license": "MIT",
+	"readmeFilename": "README.MD",
+	"bugs": {
+		"url": "https://github.com/LJR-LJQ/Ketchup/issues"
+	}
+}
