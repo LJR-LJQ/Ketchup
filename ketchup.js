@@ -1,8 +1,8 @@
 // [modules]
 var fs = require('fs'),
-	parseKetchup = require('parseKetchup').parseKetchup,
-	toHtml5Text = require('toHtml5Text').toHtml5Text,
-	fillTemplate = require('fillTemplate').fillTemplate;
+	parseKetchup = require('./lib/parseKetchup').parseKetchup,
+	toHtml5Text = require('./lib/toHtml5Text').toHtml5Text,
+	fillTemplate = require('./lib/fillTemplate').fillTemplate;
 
 // [exports]
 exports.parseText = parseText;
