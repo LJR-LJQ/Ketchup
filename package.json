@@ -16,7 +16,7 @@
     "url": "git@github.com:LJR-LJQ/Ketchup.git"
   },
   "main": "ketchup.js",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "license": "MIT",
   "readmeFilename": "README.md",
   "bugs": {
